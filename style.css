@@ -1,11 +1,323 @@
+:root {
+  --color-logo-blue: #007bff;
+  --color-primary-blue: #212e4c;
+  --color-secondary-red: #e7000b;
+  --color-tag-green: #11b047;
+  --color-pagination-active: #2c2c2c;
+  --color-gray-dark: #1e1e1e;
+  --color-gray-medium: #49454f;
+  --color-background-white: #ffffff;
+  --color-card-background-light: #f0f3ff;
+  --color-text-tag: #ffffff;
+
+  --font-family-title: 'Inter', sans-serif, Arial;
+  --font-family-body: 'DM Sans', sans-serif, Arial;
+  --font-family-search: 'Roboto', sans-serif, Arial;
+
+  --layout-max-width: 1366px;
+  --layout-padding: 2rem;
+  --grid-gap: 1rem;
+}
+
+* {
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+}
+
 body {
-  background-color: #f0f5ff;
+  background-color: var(--color-background-white);
+  color: var(--color-gray-dark);
+  font-family: var(--font-family-body);
+  line-height: 1.6;
+  min-height: 100vh;
 }
 
-.search-container {
+a {
+  text-decoration: none;
+  color: inherit;
+}
+
+.container {
+  max-width: var(--layout-max-width);
+  margin: 0 auto;
+  padding: 0 var(--layout-padding);
+}
+
+.main-content {
+  padding-top: 40px;
+  padding-bottom: 80px;
+}
+
+.site-header {
+  background-color: var(--color-background-white);
+  border-bottom: 1px solid #d9d9d9;
+}
+
+.site-header__container {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding-top: 30px;
+  padding-bottom: 30px;
+}
+
+.site-header__logo {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  transition: transform 0.2s, box-shadow 0.2s;
+  transform: scale(1);
+}
+
+.site-header__logo:hover {
+  transition: transform 0.2s, box-shadow 0.2s;
+  transform: scale(1.1);
+}
+
+.site-header__nav {
+  display: flex;
+  gap: 8px;
+}
+
+.site-header__link {
+  font-family: var(--font-family-title);
+  font-size: 16px;
+  font-weight: 400;
+  color: var(--color-gray-dark);
+  padding: 4px 10px;
+  border-radius: 8px;
+  transition: background-color 0.2s, color 0.2s;
+}
+
+.site-header__link:hover {
+  background-color: #f5f5f5;
+}
+
+.site-header__link--active {
+  background-color: #f5f5f5;
+}
+
+:root {
+  --color-gray-medium: #888888;
+  --color-background-white: #ffffff;
+  --color-primary-blue: #0a285f;
+  --font-family-search: 'Roboto', sans-serif, Arial;
+}
+
+.searchbar-wrapper {
+  margin-top: 40px;
+  margin-bottom: 32px;
+  display: flex;
+  justify-content: center;
+}
+
+.searchbar {
+  display: flex;
+  max-width: 720px;
+  min-width: 360px;
+  width: 100%;
   position: relative;
+  border-radius: 28px;
+  background-color: #f2f2f7;
 }
 
-#clear-search {
+.searchbar__input {
+  flex-grow: 1;
+  border: none;
+  border-top-left-radius: 28px;
+  border-bottom-left-radius: 28px;
+  padding: 12px 36px 12px 20px;
+  font-family: var(--font-family-search);
+  font-size: 16px;
+  color: #49454f;
+  outline: none;
+  background: transparent;
+}
+
+.searchbar__input::placeholder {
+  color: var(--color-gray-medium);
+}
+
+.searchbar__button {
+  width: 45px;
+  height: 45px;
+  background: transparent;
+  border: none;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  transition: color 0.2s;
+  color: var(--color-gray-medium);
+}
+
+.searchbar__button:hover {
+  color: var(--color-primary-blue);
+}
+
+.searchbar__button svg {
+  width: 20px;
+  height: 20px;
+}
+
+.searchbar__clear-button {
   position: absolute;
+  right: 49px;
+  top: 25px;
+  transform: translateY(-50%);
+  cursor: pointer;
+  font-size: 20px;
+  font-weight: bold;
+  z-index: 2;
+  padding: 0 5px;
+  color: var(--color-gray-medium);
+  transition: color 0.2s;
+}
+
+.searchbar__clear-button:hover {
+  color: var(--color-secondary-red);
+}
+
+.searchbar__clear-button svg {
+  width: 20px;
+  height: 20px;
+  fill: currentColor;
+}
+
+.pokemon-list {
+  display: grid;
+  gap: var(--grid-gap);
+  list-style: none;
+  padding: 0;
+  margin: 0;
+  grid-template-columns: repeat(auto-fill, minmax(180px, 1fr));
+}
+
+@media (min-width: 1200px) {
+  .pokemon-list {
+    grid-template-columns: repeat(6, 1fr);
+  }
+}
+
+.pokemon-card {
+  background-color: var(--color-card-background-light);
+  border-radius: 8px;
+  padding: 13px;
+  width: 100%;
+  max-width: 203px;
+  height: 285px;
+  text-align: center;
+  transition: transform 0.2s, box-shadow 0.2s;
+  transform: scale(1);
+}
+
+.pokemon-card:hover {
+  box-shadow: rgba(0, 0, 0, 0.1) 0px 4px 6px -1px,
+    rgba(0, 0, 0, 0.06) 0px 2px 4px -1px;
+  transition: transform 0.2s, box-shadow 0.2s;
+  transform: scale(1.025);
+  cursor: pointer;
+}
+
+.pokemon-card__header {
+  display: flex;
+  justify-content: space-between;
+  width: 100%;
+  margin-bottom: 8px;
+}
+
+.pokemon-card__type,
+.pokemon-card__id {
+  font-family: var(--font-family-body);
+  font-size: 13px;
+  font-weight: bold;
+  text-transform: capitalize;
+  border-radius: 20px;
+  color: var(--color-text-tag);
+}
+
+.pokemon-card__type {
+  color: var(--color-tag-green);
+}
+
+.pokemon-card__id {
+  color: var(--color-primary-blue);
+}
+
+.pokemon-card__image {
+  width: 143px;
+  height: 143px;
+  object-fit: contain;
+  margin: 10px 0;
+}
+
+.pokemon-card__title {
+  font-family: var(--font-family-body);
+  font-size: 14px;
+  font-weight: bold;
+  text-transform: capitalize;
+  color: var(--color-primary-blue);
+}
+
+footer {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  gap: 8px;
+  padding: 32px 0;
+  width: 100%;
+  margin-top: 72px;
+  font-family: var(--font-family-body);
+}
+
+#pagination {
+  display: flex;
+  gap: 8px;
+}
+
+#pagination button {
+  padding: 8px 12px;
+  border: none;
+  border-radius: 8px;
+  background-color: transparent;
+  color: var(--color-gray-dark);
+  font-size: 16px;
+  line-height: 100%;
+  transition: all 0.2s;
+}
+
+#pagination button:hover,
+.pagination-control-button:hover {
+  background-color: var(--color-pagination-active);
+  color: #f5f5f5;
+  cursor: pointer;
+}
+
+#pagination button.active {
+  background-color: var(--color-pagination-active);
+  color: #f5f5f5;
+  cursor: default;
+}
+
+.pagination-control-button {
+  background-color: transparent;
+  border: none;
+  border-radius: 8px;
+  padding: 8px 12px;
+  cursor: pointer;
+  transition: all 0.2s;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+  font-size: 16px;
+  line-height: 100%;
+  color: var(--color-gray-dark);
+}
+
+.pagination-control-button:disabled {
+  opacity: 0.5;
+  color: var(--color-gray-medium);
+  background-color: transparent;
 }

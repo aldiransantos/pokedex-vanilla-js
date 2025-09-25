@@ -4,31 +4,65 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <link rel="stylesheet" href="style.css">
-    <title>Pokédex</title>
+    <link rel="icon" type="image/png" href="assets/favicon/favicon-96x96.png" sizes="96x96" />
+    <link rel="icon" type="image/svg+xml" href="assets/favicon/favicon.svg" />
+    <link rel="shortcut icon" href="assets/favicon/favicon.ico" />
+    <link rel="apple-touch-icon" sizes="180x180" href="assets/favicon/apple-touch-icon.png" />
+    <link rel="manifest" href="assets/favicon/site.webmanifest" />
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=DM+Sans:ital,opsz,wght@0,9..40,100..1000;1,9..40,100..1000&family=Inter:wght@100..900&family=Roboto:ital,wght@0,100;0,300;0,400;0,500;0,700;0,900;1,100;1,300;1,400;1,500;1,700;1,900&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="/style.css">
+    <title>Pokédex | Aldiran Santos</title>
 </head>
 
 <body>
-    <header></header>
+    <header class="site-header">
+        <div class="site-header__container container">
+            <a href="#home" class="site-header__logo">
+                <img src="assets/images/logo.png" alt="Logo Pokédex">
+            </a>
+            <nav class="site-header__nav">
+                <a href="#home" class="site-header__link">Home</a>
+                <a href="#pokedex" class="site-header__link site-header__link--active">Pokédex</a>
+            </nav>
+        </div>
+    </header>
     <main>
-        <div class="searchbar">
-            <div class="search-container">
-                <input type="text" id="search-input" placeholder="Faça uma busca pelo nome do pokémon">
-                <span id="clear-search" style="display: none;">x</span>
+        <div class="searchbar-wrapper container">
+            <div class="searchbar">
+                <input type="text" id="search-input" class="searchbar__input" placeholder="Faça uma busca pelo nome do pokémon">
+                <span id="clear-search" class="searchbar__clear-button" style="display: none">
+                    <svg width="24" height="24" viewBox="0 0 24 24" fill="currentColor" xmlns="http://www.w3.org/2000/svg">
+                        <path d="M6.4 19L5 17.6L10.6 12L5 6.4L6.4 5L12 10.6L17.6 5L19 6.4L13.4 12L19 17.6L17.6 19L12 13.4L6.4 19Z" fill="currentColor" />
+                    </svg>
+                </span>
+                <button id="search-button" class="searchbar__button">
+                    <svg class="icon-search" width="24" height="24" viewBox="0 0 24 24" fill="currentColor" xmlns="http://www.w3.org/2000/svg">
+                        <path d="M19.6 21L13.3 14.7C12.8 15.1 12.225 15.4167 11.575 15.65C10.925 15.8833 10.2333 16 9.5 16C7.68333 16 6.14583 15.3708 4.8875 14.1125C3.62917 12.8542 3 11.3167 3 9.5C3 7.68333 3.62917 6.14583 4.8875 4.8875C6.14583 3.62917 7.68333 3 9.5 3C11.3167 3 12.8542 3.62917 14.1125 4.8875C15.3708 6.14583 16 7.68333 16 9.5C16 10.2333 15.8833 10.925 15.65 11.575C15.4167 12.225 15.1 12.8 14.7 13.3L21 19.6L19.6 21ZM9.5 14C10.75 14 11.8125 13.5625 12.6875 12.6875C13.5625 11.8125 14 10.75 14 9.5C14 8.25 13.5625 7.1875 12.6875 6.3125C11.8125 5.4375 10.75 5 9.5 5C8.25 5 7.1875 5.4375 6.3125 6.3125C5.4375 7.1875 5 8.25 5 9.5C5 10.75 5.4375 11.8125 6.3125 12.6875C7.1875 13.5625 8.25 14 9.5 14Z" fill="currentColor" />
+                    </svg>
+                </button>
             </div>
-            <button id="search-button">
-                🔎
-            </button>
         </div>
         <div class="container">
-            <ul id="pokemon-list" style="display: flex;">
+            <ul id="pokemon-list" class="pokemon-list">
             </ul>
         </div>
     </main>
     <footer>
-        <button id="previous">Anterior</button>
+        <button id="previous" class="pagination-control-button">
+            <svg class="icon-arrow" width="16" height="16" viewBox="0 0 24 24" fill="currentColor" xmlns="http://www.w3.org/2000/svg">
+                <path d="M19 12H5M5 12L12 19M5 12L12 5" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" />
+            </svg>
+            Anterior
+        </button>
         <div id="pagination"></div>
-        <button id="next">Próximo</button>
+        <button id="next" class="pagination-control-button">
+            Próximo
+            <svg class="icon-arrow" width="16" height="16" viewBox="0 0 24 24" fill="currentColor" xmlns="http://www.w3.org/2000/svg">
+                <path d="M5 12H19M19 12L12 5M19 12L12 19" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" />
+            </svg>
+        </button>
     </footer>
 </body>
 <script src="script.js"></script>

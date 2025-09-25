@@ -6,7 +6,7 @@ const nextButton = document.getElementById('next');
 const paginationContainer = document.getElementById('pagination');
 const clearSearchButton = document.getElementById('clear-search');
 
-let limit = 2;
+let limit = 18;
 let allPokemons = [];
 let currentList = [];
 let currentPage = 1;
@@ -80,12 +80,13 @@ async function renderPokemonCards(pokemons) {
 
   const renderPromises = pokemons.map(async (pokemon) => {
     await loadImage(pokemon.image);
-    return `<li class="card">
-            <div class="card__header">
-                <span>${pokemon.type}</span> <span>#${pokemon.id}</span>
+    return `<li class="pokemon-card" data-type="pokemon-type">
+            <div class="pokemon-card__header">
+                <span class="pokemon-card__type">${pokemon.type}</span> 
+                <span class="pokemon-card__id">#${pokemon.id}</span>
             </div>
-            <img class="card__image" src="${pokemon.image}" />
-            <p class="card__title">${pokemon.name}</p>
+            <img class="pokemon-card__image" src="${pokemon.image}" />
+            <p class="pokemon-card__title">${pokemon.name}</p>
         </li>`;
   });
 
@@ -163,7 +164,6 @@ async function handleSearch() {
   const searchWord = searchInput.value.toLowerCase();
 
   if (searchWord === '') {
-    // isSearching = false;
     currentList = allPokemons;
     updateRender(1);
     return;
@@ -175,20 +175,18 @@ async function handleSearch() {
 }
 
 searchInput.addEventListener('input', () => {
-  // Se o campo tiver conteúdo, mostra o botão; caso contrário, esconde.
   if (searchInput.value.length > 0) {
-    clearSearchButton.style.display = 'block'; // ou 'flex'
+    clearSearchButton.style.display = 'block';
   } else {
     clearSearchButton.style.display = 'none';
-    // Se o usuário apagar o conteúdo manualmente, já dispara a busca vazia!
     handleSearch();
   }
 });
 
 clearSearchButton.addEventListener('click', () => {
-  searchInput.value = ''; // Limpa o valor
-  clearSearchButton.style.display = 'none'; // Esconde o botão
-  handleSearch(); // Chama a busca, que detectará o campo vazio e voltará ao estado original
+  searchInput.value = '';
+  clearSearchButton.style.display = 'none';
+  handleSearch();
 });
 
 previousButton.addEventListener('click', () => {
