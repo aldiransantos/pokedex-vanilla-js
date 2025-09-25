@@ -3,10 +3,13 @@ const searchButton = document.getElementById('search-button');
 const listPokemon = document.getElementById('pokemon-list');
 const previousButton = document.getElementById('previous');
 const nextButton = document.getElementById('next');
+const paginationContainer = document.getElementById('pagination');
+const clearSearchButton = document.getElementById('clear-search');
 
-let limit = 18;
-let offset = 1;
+let limit = 2;
 let allPokemons = [];
+let currentList = [];
+let currentPage = 1;
 
 async function fetchPokemon(id) {
   let url;
@@ -42,15 +45,32 @@ async function fetchAllPokemons() {
       'https://pokeapi.co/api/v2/pokemon?limit=2000',
     );
     const data = await response.json();
-
     allPokemons = data.results;
+
+    currentList = allPokemons;
+    updateRender(1);
   } catch (error) {
     console.error('Surgiram alguns problemas na Pokédex:', error);
   }
 }
-fetchAllPokemons();
 
-function renderPokemonCards(pokemons) {
+async function loadImage(url) {
+  return new Promise((resolve, reject) => {
+    const img = new Image();
+    img.onload = resolve;
+    img.onerror = reject;
+    img.src = url;
+  });
+}
+
+function togglePagination(show) {
+  const displayStyle = show ? 'flex' : 'none';
+  paginationContainer.style.display = displayStyle;
+  previousButton.style.display = displayStyle;
+  nextButton.style.display = displayStyle;
+}
+
+async function renderPokemonCards(pokemons) {
   listPokemon.innerHTML = '';
 
   if (!pokemons || pokemons.length === 0) {
@@ -58,8 +78,9 @@ function renderPokemonCards(pokemons) {
     return;
   }
 
-  pokemons.forEach((pokemon) => {
-    listPokemon.innerHTML += `<li class="card">
+  const renderPromises = pokemons.map(async (pokemon) => {
+    await loadImage(pokemon.image);
+    return `<li class="card">
             <div class="card__header">
                 <span>${pokemon.type}</span> <span>#${pokemon.id}</span>
             </div>
@@ -67,30 +88,121 @@ function renderPokemonCards(pokemons) {
             <p class="card__title">${pokemon.name}</p>
         </li>`;
   });
+
+  const cardHTMLArray = await Promise.all(renderPromises);
+  listPokemon.innerHTML = cardHTMLArray.join('');
 }
 
-async function handleSearch() {
-  const searchTerm = searchInput.value.toLowerCase();
+function pagination(totalPages) {
+  paginationContainer.innerHTML = '';
 
-  if (searchTerm === '') {
-    listPokemons(offset, limit);
-    pagination();
+  if (totalPages <= 1) {
+    togglePagination(false);
     return;
   }
 
-  const filteredPokemons = allPokemons.filter((p) =>
-    p.name.includes(searchTerm),
+  togglePagination(true);
+
+  let startPage = 1;
+  let endPage = 3;
+
+  if (currentPage > 1) {
+    startPage = Math.max(1, currentPage - 1);
+    endPage = Math.min(totalPages, currentPage + 1);
+  }
+
+  endPage = Math.min(totalPages, endPage);
+
+  for (let i = startPage; i <= endPage; i++) {
+    const button = document.createElement('button');
+    button.innerText = i;
+
+    if (i === currentPage) {
+      button.classList.add('active');
+      button.disabled = true;
+    }
+
+    button.addEventListener('click', () => {
+      updateRender(i);
+    });
+    paginationContainer.appendChild(button);
+  }
+
+  previousButton.disabled = currentPage === 1;
+  nextButton.disabled = currentPage === totalPages;
+}
+
+async function updateRender(pageNumber) {
+  currentPage = pageNumber;
+
+  if (currentList.length === 0) {
+    renderPokemonCards([]);
+    pagination(0);
+    return;
+  }
+
+  listPokemon.innerHTML = `<p style="text-align: center; color: #888; font-size: 1.2em;">Capturando pokémons...</p>`;
+
+  const newOffsetIndex = (pageNumber - 1) * limit;
+  const listToRender = currentList.slice(
+    newOffsetIndex,
+    newOffsetIndex + limit,
   );
 
-  if (filteredPokemons.length > 0) {
-    const fetchPromises = filteredPokemons.map((p) => fetchPokemon(p.url));
-    const detailedPokemons = await Promise.all(fetchPromises);
+  const fetchPromises = listToRender.map((p) => fetchPokemon(p.url));
+  const detailedPokemons = await Promise.all(fetchPromises);
 
-    renderPokemonCards(detailedPokemons.filter((p) => p !== null));
-  } else {
-    renderPokemonCards([]);
-  }
+  await renderPokemonCards(detailedPokemons.filter((p) => p !== null));
+
+  const totalItems = currentList.length;
+  const totalPages = Math.ceil(totalItems / limit);
+  pagination(totalPages);
 }
+
+async function handleSearch() {
+  const searchWord = searchInput.value.toLowerCase();
+
+  if (searchWord === '') {
+    // isSearching = false;
+    currentList = allPokemons;
+    updateRender(1);
+    return;
+  }
+
+  isSearching = true;
+  currentList = allPokemons.filter((p) => p.name.includes(searchWord));
+  updateRender(1);
+}
+
+searchInput.addEventListener('input', () => {
+  // Se o campo tiver conteúdo, mostra o botão; caso contrário, esconde.
+  if (searchInput.value.length > 0) {
+    clearSearchButton.style.display = 'block'; // ou 'flex'
+  } else {
+    clearSearchButton.style.display = 'none';
+    // Se o usuário apagar o conteúdo manualmente, já dispara a busca vazia!
+    handleSearch();
+  }
+});
+
+clearSearchButton.addEventListener('click', () => {
+  searchInput.value = ''; // Limpa o valor
+  clearSearchButton.style.display = 'none'; // Esconde o botão
+  handleSearch(); // Chama a busca, que detectará o campo vazio e voltará ao estado original
+});
+
+previousButton.addEventListener('click', () => {
+  if (currentPage > 1) {
+    updateRender(currentPage - 1);
+  }
+});
+
+nextButton.addEventListener('click', () => {
+  const totalPages = Math.ceil(currentList.length / limit);
+  if (currentPage < totalPages) {
+    updateRender(currentPage + 1);
+  }
+});
 
 searchButton.addEventListener('click', handleSearch);
 searchInput.addEventListener('keydown', (event) => {
@@ -99,70 +211,4 @@ searchInput.addEventListener('keydown', (event) => {
   }
 });
 
-async function listPokemons(offset, limit) {
-  listPokemon.innerHTML = '';
-
-  const fetchPromises = [];
-  for (let i = offset; i < offset + limit; i++) {
-    fetchPromises.push(fetchPokemon(i));
-  }
-
-  const detailedPokemons = await Promise.all(fetchPromises);
-
-  renderPokemonCards(detailedPokemons.filter((p) => p !== null));
-}
-
-function updatePage(newOffset) {
-  offset = newOffset;
-
-  listPokemons(offset, limit);
-  pagination(offset, limit);
-}
-
-previousButton.addEventListener('click', () => {
-  if (offset > 1) {
-    updatePage(offset - limit);
-  }
-});
-
-nextButton.addEventListener('click', () => {
-  updatePage(offset + limit);
-});
-
-function pagination(currentOffset, currentLimit) {
-  fetch(`https://pokeapi.co/api/v2/pokemon/`)
-    .then((res) => res.json())
-    .then((data) => {
-      const totalCount = data.count;
-      const totalPages = Math.ceil(totalCount / currentLimit);
-      const paginationContainer = document.getElementById('pagination');
-      paginationContainer.innerHTML = '';
-
-      const currentPage = Math.ceil(currentOffset / currentLimit);
-
-      let startPage = 1;
-      let endPage = 3;
-
-      if (currentPage > 1) {
-        startPage = Math.max(1, currentPage - 1);
-        endPage = Math.min(totalPages, currentPage + 1);
-      }
-
-      for (let i = startPage; i <= endPage; i++) {
-        const button = document.createElement('button');
-        button.innerText = i;
-        if (i === currentPage) {
-          button.classList.add('active');
-        }
-
-        button.addEventListener('click', () => {
-          const newOffset = (i - 1) * currentLimit + 1;
-          updatePage(newOffset);
-        });
-        paginationContainer.appendChild(button);
-      }
-    });
-}
-
-listPokemons(offset, limit);
-pagination(offset, limit);
+fetchAllPokemons();
